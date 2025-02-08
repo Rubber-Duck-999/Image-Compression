@@ -1,19 +1,22 @@
 # Image-Compression
 
+[![Build](https://github.com/Rubber-Duck-999/Image-Compression/actions/workflows/build.yml/badge.svg)](https://github.com/Rubber-Duck-999/Image-Compression/actions/workflows/build.yml)
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+Built to show a working example stack for managing user images and compressing them.
 
 ## Getting Started
 
-First, run the development server:
+First, install the node modules:
 
 ```bash
-npm run dev
-# or
+yarn install
+```
+
+Then run the local server:
+```bash
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 ## Docker
