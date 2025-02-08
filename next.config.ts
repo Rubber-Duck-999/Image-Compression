@@ -1,7 +1,17 @@
-import type { NextConfig } from "next";
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: 'standalone',
+  transpilePackages: [
+    'swagger-ui-react'
+  ]
+}
 
-const nextConfig: NextConfig = {
-  /* config options here */
-};
+module.exports = {
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
+}
 
 export default nextConfig;

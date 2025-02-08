@@ -5,6 +5,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --nav-text-primary: #2563eb;    /* blue-600 */
+  --nav-text-secondary: #4b5563;  /* gray-600 */
+  --nav-bg-hover: #eff6ff;        /* blue-50 */
+  --nav-border-active: #3b82f6;   /* blue-500 */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -15,6 +19,12 @@
 }
 
 body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+link {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
