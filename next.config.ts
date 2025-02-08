@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
-  experimental: {
-    outputFileTracingRoot: undefined
-  }
+  transpilePackages: [
+    'swagger-ui-react'
+  ]
 }
 
 export default nextConfig;
