@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import sharp from 'sharp';
-import { ZipInputFile, zipSync } from 'fflate';
+import { zipSync } from 'fflate';
 
 /**
  * @swagger

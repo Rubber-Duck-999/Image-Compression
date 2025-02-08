@@ -41,3 +41,10 @@ docker run -p 3000:3000 image-compressor
 - https://www.npmjs.com/package/sharp
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
   - Always use mozilla for reference
+
+
+## Issues
+
+- docker build with swagger generation
+  - https://github.com/swagger-api/swagger-ui/issues/9243
+- 
