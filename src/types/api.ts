@@ -1,4 +1,4 @@
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T> {
   data?: T
   error?: string
   status: number
@@ -7,4 +7,4 @@ export interface ApiResponse<T = any> {
 export interface HealthCheckResponse {
   status: string
   timestamp: string
-} 
+}

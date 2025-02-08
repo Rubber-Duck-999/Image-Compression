@@ -15,3 +15,10 @@ pnpm dev
 # or
 bun dev
 ```
+
+## Docker
+
+```bash
+docker build -t image-compressor .
+docker run -p 3000:3000 image-compressor
+```
