@@ -25,3 +25,9 @@ yarn dev
 docker build -t image-compressor .
 docker run -p 3000:3000 image-compressor
 ```
+
+## Guides used
+
+- https://tailwindcss.com/docs/
+  - First time used so I looked up every keyword, took a while
+- 
