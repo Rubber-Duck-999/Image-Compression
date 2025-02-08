@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { Suspense } from 'react';
+import 'swagger-ui-react/swagger-ui.css';
 
 // Dynamically import SwaggerUI with no SSR
 const SwaggerUI = dynamic(
@@ -18,10 +18,6 @@ const SwaggerUI = dynamic(
 
 export default function ApiDocs() {
   return (
-    <div className="container mx-auto p-4">
-      <Suspense fallback={<div>Loading...</div>}>
-        <SwaggerUI url="/api/docs" />
-      </Suspense>
-    </div>
+    <SwaggerUI url="/api/docs" />
   );
 }

@@ -48,4 +48,12 @@ docker run -p 3000:3000 image-compressor
 
 - docker build with swagger generation
   - https://github.com/swagger-api/swagger-ui/issues/9243
-- 
+- I went downa  rabbit hole with multiple file uploads and then zipping back, removed due to time scope creep
+
+## Preview
+
+![UI](./images/Base-UI.png)
+
+![API](./images/API.png)
+
+![Mobile](./images/Compress.png)

@@ -1,18 +1,18 @@
 'use client';
 
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
 
 export default function CompressPage() {
+  const [image, setImage] = useState<{ original: string; compressed: string }>();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const fetchBlob = async (fileLinks: Array<File>) => {
-    console.log(`Uploading ${fileLinks.length} files`);
+  const fetchBlob = async (fileLink: File) => {
+    setIsLoading(true);
     const formData = new FormData();
-    
-    // Append files directly without creating blob URLs
-    fileLinks.forEach((file) => {
-      formData.append('files', file);
-    });
+    // Create preview URL for original image
+    const originalUrl = URL.createObjectURL(fileLink);
 
+    formData.append('file', fileLink);
     try {
       const response = await fetch('/api/compress', {
         method: 'POST',
@@ -25,19 +25,17 @@ export default function CompressPage() {
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      
-      // Create a link element and trigger download
-      const a = document.createElement('a');
-      a.href = url;
-      // Set appropriate filename based on number of files
-      a.download = 'compressed-images.zip';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
+
+      // Update images state with original and compressed URL
+      setImage({
+        original: originalUrl,
+        compressed: url
+      });
     } catch (error) {
       console.error('Error compressing images:', error);
       alert('Failed to compress images. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -45,25 +43,20 @@ export default function CompressPage() {
     const { files } = event.target;
     if (!files) return;
 
-    const fileLinks: File[] = Array.from(files);
-    if (fileLinks.length > 5) {
-      return;
-    }
-
     const FILESIZE_LIMIT = 15 * 1024 * 1024;
     // 15MB per file
     const acceptedTypes = ['image/png', 'image/jpeg'];
 
-    for (const file of fileLinks) {
-      if (file.size > FILESIZE_LIMIT) {
-        return;
-      }
-      if (!acceptedTypes.includes(file.type)) {
-        return;
-      }
+    if (files[0].size > FILESIZE_LIMIT) {
+      alert('Please upload a correct file (size)');
+      return;
+    }
+    if (!acceptedTypes.includes(files[0].type)) {
+      alert('Please try a valid file type');
+      return;
     }
 
-    fetchBlob(fileLinks);
+    fetchBlob(files[0]);
   };
 
   return (
@@ -96,13 +89,13 @@ export default function CompressPage() {
               />
             </svg>
             <p className="mb-1 md:mb-2 text-sm md:text-base text-gray-500 dark:text-gray-400">
-              <span className="font-semibold">Click to upload</span> or drag and drop
+              Click to upload or drag and drop
             </p>
-            <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">
-              SVG, PNG, JPG or GIF
+            <p className="upload-text">
+              PNG or JPEG
             </p>
-            <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">
-              (Max file zie: 15MB)
+            <p className="upload-text">
+              (Max file size: 15MB)
             </p>
           </div>
           <input 
@@ -114,6 +107,48 @@ export default function CompressPage() {
           />
         </label>
       </main>
+      
+      {isLoading && (
+        <div className="mt-8 text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-2 text-gray-600">Compressing images...</p>
+        </div>
+      )}
+      
+      {image && (
+        <div className="flex flex-col items-center justify-center mx-auto mt-8 w-full max-w-[1200px]">
+          <h2 className="text-2xl font-semibold mb-6 text-center">Compressed Images</h2>
+          <div className="grid grid-cols-1 gap-8 w-full">
+            <div className="flex flex-col gap-2">
+              <h3 className="font-medium text-center">Original</h3>
+              <div className="image-container">
+                <img 
+                  src={image.original} 
+                  alt={`Original`}
+                  className="image-preview"
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <h3 className="font-medium text-center">Compressed</h3>
+              <div className="image-container">
+                <img 
+                  src={image.compressed} 
+                  alt={`Compressed`}
+                  className="image-preview"
+                />
+              </div>
+              <a
+                href={image.compressed}
+                download="compressed-image"
+                className="btn-primary mt-2"
+              >
+                Download Compressed Image
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
