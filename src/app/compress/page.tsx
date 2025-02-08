@@ -1,12 +1,18 @@
 'use client';
 
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
 
 export default function CompressPage() {
+  const [images, setImages] = useState<{ original: string; compressed: string }[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchBlob = async (fileLinks: Array<File>) => {
+    setIsLoading(true);
     console.log(`Uploading ${fileLinks.length} files`);
     const formData = new FormData();
+    
+    // Create preview URLs for original images
+    const originalUrls = fileLinks.map(file => URL.createObjectURL(file));
     
     // Append files directly without creating blob URLs
     fileLinks.forEach((file) => {
@@ -26,10 +32,16 @@ export default function CompressPage() {
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       
+      // Update images state with original and compressed URLs
+      setImages(originalUrls.map((original) => ({
+        original,
+        compressed: url
+      })));
+
       // Create a link element and trigger download
       const a = document.createElement('a');
       a.href = url;
-      // Set appropriate filename based on number of files
+      // Download the zip returned by the api
       a.download = 'compressed-images.zip';
       document.body.appendChild(a);
       a.click();
@@ -38,6 +50,8 @@ export default function CompressPage() {
     } catch (error) {
       console.error('Error compressing images:', error);
       alert('Failed to compress images. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -99,7 +113,7 @@ export default function CompressPage() {
               <span className="font-semibold">Click to upload</span> or drag and drop
             </p>
             <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">
-              SVG, PNG, JPG or GIF
+              PNG or JPG
             </p>
             <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">
               (Max file zie: 15MB)
@@ -114,6 +128,45 @@ export default function CompressPage() {
           />
         </label>
       </main>
+      
+      {isLoading && (
+        <div className="mt-8 text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-2 text-gray-600">Compressing images...</p>
+        </div>
+      )}
+      
+      {images.length > 0 && (
+        <div className="flex flex-col items-center justify-center w-full max-w-6xl mx-auto mt-8 px-4 md:px-8">
+          <h2 className="text-2xl font-semibold mb-6 text-center">Compressed Images</h2>
+          <div className="gap-6">
+            {images.map((image, index) => (
+              <div key={index} className="border rounded-lg p-4 space-y-4 bg-white dark:bg-gray-800">
+                <div className="space-y-2">
+                  <h3 className="font-medium text-center">Original</h3>
+                  <div className="flex items-center justify-center object-cover h-48 bg-gray-100 dark:bg-gray-700 rounded">
+                    <img 
+                      src={image.original} 
+                      alt={`Original ${index + 1}`}
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="font-medium text-center">Compressed</h3>
+                  <div className="flex items-center justify-center h-48 bg-gray-100 dark:bg-gray-700 rounded">
+                    <img 
+                      src={image.compressed} 
+                      alt={`Compressed ${index + 1}`}
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
