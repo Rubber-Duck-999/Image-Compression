@@ -8,12 +8,10 @@ export default function CompressPage() {
 
   const fetchBlob = async (fileLink: File) => {
     setIsLoading(true);
-    console.log(`Uploading file`);
     const formData = new FormData();
-    
-    // Create preview URLs for original images
+    // Create preview URL for original image
     const originalUrl = URL.createObjectURL(fileLink);
-    
+
     formData.append('file', fileLink);
     try {
       const response = await fetch('/api/compress', {
@@ -27,8 +25,8 @@ export default function CompressPage() {
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      
-      // Update images state with original and compressed URLs
+
+      // Update images state with original and compressed URL
       setImage({
         original: originalUrl,
         compressed: url
@@ -45,15 +43,16 @@ export default function CompressPage() {
     const { files } = event.target;
     if (!files) return;
 
-
     const FILESIZE_LIMIT = 15 * 1024 * 1024;
     // 15MB per file
     const acceptedTypes = ['image/png', 'image/jpeg'];
 
     if (files[0].size > FILESIZE_LIMIT) {
+      alert('Please upload a correct file (size)');
       return;
     }
     if (!acceptedTypes.includes(files[0].type)) {
+      alert('Please try a valid file type');
       return;
     }
 
@@ -90,13 +89,13 @@ export default function CompressPage() {
               />
             </svg>
             <p className="mb-1 md:mb-2 text-sm md:text-base text-gray-500 dark:text-gray-400">
-              <span className="font-semibold">Click to upload</span> or drag and drop
+              Click to upload or drag and drop
             </p>
             <p className="upload-text">
               PNG or JPEG
             </p>
             <p className="upload-text">
-              (Max file zie: 15MB)
+              (Max file size: 15MB)
             </p>
           </div>
           <input 

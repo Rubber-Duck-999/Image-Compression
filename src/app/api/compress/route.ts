@@ -22,11 +22,11 @@ import sharp from 'sharp';
  *       200:
  *         description: Image compressed successfully
  *         content:
- *           image/png:
+ *           image/webp:
  *             schema:
  *               type: string
  *               format: binary
- *               description: Compressed PNG image (for single file)
+ *               description: Compressed webp image (for single file)
  *       400:
  *         description: Bad request
  *         content:
@@ -52,22 +52,21 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get('file');
     
-    if (!file) {
-      return new NextResponse('No files provided', { status: 400 });
+    if (!file || !(file instanceof File)) {
+      console.error('Invalid file');
+      return new NextResponse('No file provided', { status: 400 });
     }
-    if (!(file instanceof File)) {
-      console.error('Invalid file but carry on');
-      return;
-    }
+
     // Valid file so move on
     const buffer = Buffer.from(await file.arrayBuffer());
     const compressedBuffer = await sharp(buffer)
-      .webp({ quality: 10, effort: 1 })
+      .webp({ quality: 50, effort: 1 })
       .toBuffer();
+    // I want to handle quality parameter if I had more time
+    // Effort is max for CPU usage
 
     const safeFileName = encodeURIComponent(file.name.replace(/\.[^/.]+$/, '.webp'));
-    
-    // Return zip successfully
+    // Return image
     return new NextResponse(compressedBuffer, {
       headers: {
         'Content-Type': 'image/webp',
