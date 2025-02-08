@@ -27,6 +27,10 @@ docker build -t image-compressor .
 docker run -p 3000:3000 image-compressor
 ```
 
+Could have used docker compose
+
+Added container into the packages
+
 ## Guides used
 
 - https://tailwindcss.com/docs/
