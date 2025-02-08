@@ -1,6 +1,7 @@
 # Image-Compressor
 
-[![Build](https://github.com/Rubber-Duck-999/Image-Compressor/actions/workflows/build.yml/badge.svg)](https://github.com/Rubber-Duck-999/Image-Compressor/actions/workflows/build.yml)
+[![Build](https://github.com/Rubber-Duck-999/Image-Compressor/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Rubber-Duck-999/Image-Compressor/actions/workflows/build.yml)
+
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 

@@ -3,10 +3,7 @@ const nextConfig = {
   output: 'standalone',
   transpilePackages: [
     'swagger-ui-react'
-  ]
-}
-
-module.exports = {
+  ],
   logging: {
     fetches: {
       fullUrl: true,
