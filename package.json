@@ -13,7 +13,6 @@
     "@next/bundle-analyzer": "^15.1.6",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-react": "^5.18.0",
-    "fflate": "^0.8.2",
     "next": "15.1.6",
     "next-swagger-doc": "^0.4.1",
     "react": "^19.0.0",

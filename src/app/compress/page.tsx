@@ -3,22 +3,18 @@
 import { ChangeEvent, useState } from "react";
 
 export default function CompressPage() {
-  const [images, setImages] = useState<{ original: string; compressed: string }[]>([]);
+  const [image, setImage] = useState<{ original: string; compressed: string }>();
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchBlob = async (fileLinks: Array<File>) => {
+  const fetchBlob = async (fileLink: File) => {
     setIsLoading(true);
-    console.log(`Uploading ${fileLinks.length} files`);
+    console.log(`Uploading file`);
     const formData = new FormData();
     
     // Create preview URLs for original images
-    const originalUrls = fileLinks.map(file => URL.createObjectURL(file));
+    const originalUrl = URL.createObjectURL(fileLink);
     
-    // Append files directly without creating blob URLs
-    fileLinks.forEach((file) => {
-      formData.append('files', file);
-    });
-
+    formData.append('file', fileLink);
     try {
       const response = await fetch('/api/compress', {
         method: 'POST',
@@ -33,20 +29,10 @@ export default function CompressPage() {
       const url = window.URL.createObjectURL(blob);
       
       // Update images state with original and compressed URLs
-      setImages(originalUrls.map((original) => ({
-        original,
+      setImage({
+        original: originalUrl,
         compressed: url
-      })));
-
-      // Create a link element and trigger download
-      const a = document.createElement('a');
-      a.href = url;
-      // Download the zip returned by the api
-      a.download = 'compressed-images.zip';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
+      });
     } catch (error) {
       console.error('Error compressing images:', error);
       alert('Failed to compress images. Please try again.');
@@ -59,25 +45,19 @@ export default function CompressPage() {
     const { files } = event.target;
     if (!files) return;
 
-    const fileLinks: File[] = Array.from(files);
-    if (fileLinks.length > 5) {
-      return;
-    }
 
     const FILESIZE_LIMIT = 15 * 1024 * 1024;
     // 15MB per file
     const acceptedTypes = ['image/png', 'image/jpeg'];
 
-    for (const file of fileLinks) {
-      if (file.size > FILESIZE_LIMIT) {
-        return;
-      }
-      if (!acceptedTypes.includes(file.type)) {
-        return;
-      }
+    if (files[0].size > FILESIZE_LIMIT) {
+      return;
+    }
+    if (!acceptedTypes.includes(files[0].type)) {
+      return;
     }
 
-    fetchBlob(fileLinks);
+    fetchBlob(files[0]);
   };
 
   return (
@@ -112,10 +92,10 @@ export default function CompressPage() {
             <p className="mb-1 md:mb-2 text-sm md:text-base text-gray-500 dark:text-gray-400">
               <span className="font-semibold">Click to upload</span> or drag and drop
             </p>
-            <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">
-              PNG or JPG
+            <p className="upload-text">
+              PNG or JPEG
             </p>
-            <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">
+            <p className="upload-text">
               (Max file zie: 15MB)
             </p>
           </div>
@@ -136,34 +116,37 @@ export default function CompressPage() {
         </div>
       )}
       
-      {images.length > 0 && (
-        <div className="flex flex-col items-center justify-center w-full max-w-6xl mx-auto mt-8 px-4 md:px-8">
+      {image && (
+        <div className="flex flex-col items-center justify-center mx-auto mt-8 w-full max-w-[1200px]">
           <h2 className="text-2xl font-semibold mb-6 text-center">Compressed Images</h2>
-          <div className="gap-6">
-            {images.map((image, index) => (
-              <div key={index} className="border rounded-lg p-4 space-y-4 bg-white dark:bg-gray-800">
-                <div className="space-y-2">
-                  <h3 className="font-medium text-center">Original</h3>
-                  <div className="flex items-center justify-center object-cover h-48 bg-gray-100 dark:bg-gray-700 rounded">
-                    <img 
-                      src={image.original} 
-                      alt={`Original ${index + 1}`}
-                      className="max-w-full max-h-full object-contain"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <h3 className="font-medium text-center">Compressed</h3>
-                  <div className="flex items-center justify-center h-48 bg-gray-100 dark:bg-gray-700 rounded">
-                    <img 
-                      src={image.compressed} 
-                      alt={`Compressed ${index + 1}`}
-                      className="max-w-full max-h-full object-contain"
-                    />
-                  </div>
-                </div>
+          <div className="grid grid-cols-1 gap-8 w-full">
+            <div className="flex flex-col gap-2">
+              <h3 className="font-medium text-center">Original</h3>
+              <div className="image-container">
+                <img 
+                  src={image.original} 
+                  alt={`Original`}
+                  className="image-preview"
+                />
               </div>
-            ))}
+            </div>
+            <div className="flex flex-col gap-2">
+              <h3 className="font-medium text-center">Compressed</h3>
+              <div className="image-container">
+                <img 
+                  src={image.compressed} 
+                  alt={`Compressed`}
+                  className="image-preview"
+                />
+              </div>
+              <a
+                href={image.compressed}
+                download="compressed-image"
+                className="btn-primary mt-2"
+              >
+                Download Compressed Image
+              </a>
+            </div>
           </div>
         </div>
       )}
