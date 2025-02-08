@@ -1,4 +1,73 @@
+'use client';
+
+import { ChangeEvent } from "react";
+
 export default function CompressPage() {
+
+  const fetchBlob = async (fileLinks: Array<File>) => {
+    console.log(`Uploading ${fileLinks.length} files`);
+    const formData = new FormData();
+    for (const file of fileLinks) {
+      const blobLink = URL.createObjectURL(file);
+      const response = await fetch(blobLink);
+      const responseBlob = await response.blob();
+      const temp = new File([responseBlob], file.name, {
+        type: file.type,
+      });
+      formData.append('file', temp);
+    }
+    try {
+      const response = await fetch('/api/compress', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to compress image');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      
+      // Create a link element and trigger download
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `compressed-${fileLinks[0].name}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error compressing image:', error);
+      alert('Failed to compress image. Please try again.');
+    }
+  };
+
+  const callCompress = async (event: ChangeEvent<HTMLInputElement>) => {
+    const { files } = event.target;
+    if (!files) return;
+
+    const fileLinks: File[] = Array.from(files);
+    if (fileLinks.length > 5) {
+      return;
+    }
+
+    const FILESIZE_LIMIT = 15 * 1024 * 1024;
+    // 15MB per file
+    const acceptedTypes = ['image/png', 'image/jpg'];
+
+    for (const file of fileLinks) {
+      if (file.size > FILESIZE_LIMIT) {
+        return;
+      }
+      if (!acceptedTypes.includes(file.type)) {
+        return;
+      }
+    }
+
+    fetchBlob(fileLinks);
+  };
+
   return (
     <div className="flex flex-col items-center justify-start md:justify-center min-h-[calc(100vh-4rem)] p-4 md:p-8">
       <h1 className="text-2xl md:text-4xl font-bold mb-4 md:mb-8 text-center">
@@ -43,6 +112,7 @@ export default function CompressPage() {
             type="file" 
             className="hidden" 
             accept="image/*"
+            onChange={async (e) => callCompress(e)}
           />
         </label>
       </main>
