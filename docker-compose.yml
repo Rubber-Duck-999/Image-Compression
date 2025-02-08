@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  app:
+    container_name: ${CORPORATE_WEB_CONTAINER_NAME}
+    image: darwinintelligence/corporate_web:${CORPORATE_WEB_TAG}
+    restart: always
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    env_file:
+      - .env
+    ports:
+      - '${CORPORATE_WEB_PORT}:80'
