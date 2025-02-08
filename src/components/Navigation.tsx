@@ -20,7 +20,7 @@ export default function Navigation() {
       <div className="mx-auto px-4">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link href="/compress" className="text-xl font-bold text-[var(--nav-text-secondary)]">
+            <Link href="/" className="text-xl font-bold text-[var(--nav-text-secondary)]">
               Image Compressor
             </Link>
           </div>
@@ -28,10 +28,10 @@ export default function Navigation() {
           {/* Desktop Menu */}
           <div className="hidden md:flex md:items-center md:space-x-8">
             <Link
-              href="/compress"
+              href="/"
               className={`inline-flex items-center px-5 pt-1 border-b-2 min-w-[100px] text-center justify-center
-                ${pathname === '/compress' ? 'border-[var(--nav-border-active)]' : 'border-transparent'}
-                ${isActive('/compress')}`}
+                ${pathname === '/' ? 'border-[var(--nav-border-active)]' : 'border-transparent'}
+                ${isActive('/')}`}
             >
               Compress
             </Link>
@@ -82,9 +82,9 @@ export default function Navigation() {
       <div className={`${isMenuOpen ? 'block' : 'hidden'} md:hidden`}>
         <div className="px-2 pt-2 pb-3 space-y-1">
           <Link
-            href="/compress"
+            href="/"
             className={`block px-3 py-2 rounded-md text-base font-medium 
-              ${pathname === '/compress' 
+              ${pathname === '/' 
                 ? 'bg-[var(--nav-bg-hover)] text-[var(--nav-text-primary)]' 
                 : 'text-[var(--nav-text-secondary)] hover:bg-[var(--nav-bg-hover)] hover:text-[var(--nav-text-primary)]'
               }`}
