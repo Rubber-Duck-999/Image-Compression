@@ -7,15 +7,12 @@ export default function CompressPage() {
   const fetchBlob = async (fileLinks: Array<File>) => {
     console.log(`Uploading ${fileLinks.length} files`);
     const formData = new FormData();
-    for (const file of fileLinks) {
-      const blobLink = URL.createObjectURL(file);
-      const response = await fetch(blobLink);
-      const responseBlob = await response.blob();
-      const temp = new File([responseBlob], file.name, {
-        type: file.type,
-      });
-      formData.append('file', temp);
-    }
+    
+    // Append files directly without creating blob URLs
+    fileLinks.forEach((file) => {
+      formData.append('files', file);
+    });
+
     try {
       const response = await fetch('/api/compress', {
         method: 'POST',
@@ -23,7 +20,7 @@ export default function CompressPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to compress image');
+        throw new Error('Failed to compress images');
       }
 
       const blob = await response.blob();
@@ -32,14 +29,15 @@ export default function CompressPage() {
       // Create a link element and trigger download
       const a = document.createElement('a');
       a.href = url;
-      a.download = `compressed-${fileLinks[0].name}`;
+      // Set appropriate filename based on number of files
+      a.download = 'compressed-images.zip';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Error compressing image:', error);
-      alert('Failed to compress image. Please try again.');
+      console.error('Error compressing images:', error);
+      alert('Failed to compress images. Please try again.');
     }
   };
 
@@ -54,7 +52,7 @@ export default function CompressPage() {
 
     const FILESIZE_LIMIT = 15 * 1024 * 1024;
     // 15MB per file
-    const acceptedTypes = ['image/png', 'image/jpg'];
+    const acceptedTypes = ['image/png', 'image/jpeg'];
 
     for (const file of fileLinks) {
       if (file.size > FILESIZE_LIMIT) {

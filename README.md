@@ -16,7 +16,7 @@ yarn install
 
 Then run the local server:
 ```bash
-yarn dev
+yarn run dev
 ```
 
 ## Docker
@@ -30,4 +30,14 @@ docker run -p 3000:3000 image-compressor
 
 - https://tailwindcss.com/docs/
   - First time used so I looked up every keyword, took a while
-- 
+- https://flowbite.com/docs/components/tabs/
+- https://www.duplichecker.com/image-compressor.php
+  - Followed someone elses basic website for features that I may have missed
+- https://nextjs.org/docs/app/getting-started/layouts-and-pages
+  - First time again using this, used the template then tried to follow their section on apis, and pages
+  - Was confused by each page file being called page.tsx at first
+- https://www.npmjs.com/package/next-swagger-doc
+  - I like swagger and shows the user how to use the software api instead of the frontend
+- https://www.npmjs.com/package/sharp
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
+  - Always use mozilla for reference
